@@ -21,7 +21,7 @@ namespace Starlight
 
         uint[] indices = {  // note that we start from 0!
             0, 1, 2, // first triangle
-            1, 2, 3,
+            1, 2, 3
         };
 
         int VertexBufferObject;
@@ -43,7 +43,13 @@ namespace Starlight
 
             KeyRun esctoquit = new(this, Keys.Escape, () => Close());
             ents.Add(esctoquit);
-            
+
+            Sound sound = new();
+            sound.Open("resources\\archives.mp3"); //test audio open
+            sound.Play(); // test audio play
+            sound.Stop(); // test audio stop
+            sound.Play(); // test audio recover from stop
+
             shader.Create("resources\\shaders\\vertex.vert", "resources\\shaders\\fragment.frag");
 
             GL.ClearColor(0.2f, 0.3f, 0.3f,1.0f);
