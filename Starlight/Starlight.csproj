@@ -19,4 +19,8 @@
     <Exec Command="xcopy &quot;$(ProjectDir)resources\*&quot; &quot;$(ProjectDir)$(OutDir)resources\&quot; /E /I /Y" />
   </Target>
 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="rd $(ProjectDir)$(OutDir)resources -S -Q" />
+  </Target>
+
 </Project>

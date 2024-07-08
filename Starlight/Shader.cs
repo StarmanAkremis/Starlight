@@ -61,6 +61,15 @@ public class Shader : IDisposable
         GL.DeleteShader(VertexShader);
     }
 
+    public void SetInt(string name, int value)
+    {
+        int location = GL.GetUniformLocation(Handle, name);
+
+        GL.Uniform1(location, value);
+
+        GL.GetUniform(Handle, location, out float a);
+    }
+
     public void Use()
     {
         GL.UseProgram(Handle);
@@ -82,7 +91,7 @@ public class Shader : IDisposable
     {
         if (disposedValue == false)
         {
-            Console.WriteLine("GPU Resource leak! Did you forget to call Dispose()?");
+            throw new Exception("GPU Resource leak! Did you forget to call Dispose()?");
         }
     }
 

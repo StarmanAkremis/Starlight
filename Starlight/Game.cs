@@ -30,7 +30,8 @@ namespace Starlight
 
         public Shader shader = new();
 
-        Texture texture = new();
+        Texture texture1 = new();
+        Texture texture2 = new();
 
         public Game(int width, int height, string title) : base(GameWindowSettings.Default, new NativeWindowSettings()
         {
@@ -52,12 +53,12 @@ namespace Starlight
 
             shader.Create("resources\\shaders\\vertex.vert", "resources\\shaders\\fragment.frag");
 
-            GL.ClearColor(0.2f, 0.3f, 0.3f,1.0f);
+            GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
             VertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-            
+
             VertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(VertexArrayObject);
 
@@ -72,24 +73,32 @@ namespace Starlight
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
 
-            texture.Make("resources\\dummy.jpg");
-            texture.Use();
+            texture1.Make("resources\\dummy.jpg");
+            texture2.Make("resources\\Star.png");
 
+            shader.Use();
+            shader.SetInt("texture1", 0);
+            shader.SetInt("texture2", 1);
         }
+
 
         protected override void OnRenderFrame(FrameEventArgs args)
         {
-            base.OnRenderFrame(args);
-
             GL.Clear(ClearBufferMask.ColorBufferBit);
-
-            shader.Use();
-
             GL.BindVertexArray(VertexArrayObject);
+
+            shader.Use(); // Use the shader program before binding textures
+
+            texture1.Use(TextureUnit.Texture0);
+            texture2.Use(TextureUnit.Texture1);
+
             GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
 
-            SwapBuffers();
+            Context.SwapBuffers();
+
+            base.OnRenderFrame(args);
         }
+
 
         protected override void OnFramebufferResize(FramebufferResizeEventArgs e)
         {
