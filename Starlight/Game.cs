@@ -45,8 +45,7 @@ namespace Starlight
             KeyRun esctoquit = new(this, Keys.Escape, () => Close());
             ents.Add(esctoquit);
 
-            Sound sound = new();
-            sound.Open("resources\\archives.mp3"); //test audio open
+            Sound sound = new("resources\\archives.mp3"); //test audio open
             sound.Play(); // test audio play
             sound.Stop(); // test audio stop
             sound.Play(); // test audio recover from stop
@@ -74,7 +73,7 @@ namespace Starlight
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
 
             texture1.Make("resources\\dummy.jpg");
-            texture2.Make("resources\\Star.png");
+            texture2.Make("resources\\awesome.png");
 
             shader.Use();
             shader.SetInt("texture1", 0);

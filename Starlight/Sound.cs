@@ -9,16 +9,15 @@ namespace Starlight
 {
     public class Sound
     {
-        AudioFileReader? audioFile;
+        AudioFileReader audioFile;
         WaveOutEvent? device;
-        public void Open(string filePath)
+        public Sound(string filePath)
         {
             audioFile = new(filePath);
         }
 
         public void Play()
         {
-            ArgumentNullException.ThrowIfNull(audioFile);
             device = new WaveOutEvent();
             
             device.Init(audioFile);
@@ -27,7 +26,6 @@ namespace Starlight
 
         public void Stop()
         {
-            ArgumentNullException.ThrowIfNull(audioFile);
             ArgumentNullException.ThrowIfNull(device);
             device.Stop();
             device.Dispose();
