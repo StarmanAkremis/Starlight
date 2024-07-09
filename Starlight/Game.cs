@@ -75,7 +75,7 @@ namespace Starlight
 
             Matrix4 rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(90));
             Matrix4 scale = Matrix4.CreateScale(.5f, .5f, .5f);
-            Matrix4 transform = rotation * scale;
+            Matrix4 transform = Matrix4.Identity; //rotation * scale;
 
             texture1.Make("resources\\dummy.jpg");
             texture2.Make("resources\\awesome.png");
@@ -83,6 +83,7 @@ namespace Starlight
             shader.SetUniform("texture1", 0);
             shader.SetUniform("texture2", 1);
             shader.SetUniform("transform", transform);
+            shader.SetUniform("maxoffset", .5f);
         }
 
 
@@ -91,10 +92,10 @@ namespace Starlight
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.BindVertexArray(VertexArrayObject);
 
-            shader.Use(); // Use the shader program before binding textures
-
             texture1.Use(TextureUnit.Texture0);
             texture2.Use(TextureUnit.Texture1);
+
+            shader.SetUniform("randhelper", ((float)DateTime.Now.TimeOfDay.TotalSeconds));
 
             GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
 

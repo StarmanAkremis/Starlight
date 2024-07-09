@@ -103,6 +103,14 @@ namespace Starlight
             GL.UniformMatrix4(location, true, ref value);
         }
 
+        public void SetUniform(string name, float value)
+        {
+            Use();
+
+            int location = GL.GetUniformLocation(Handle, name);
+            GL.Uniform1(location, value);
+        }
+
         /// <summary>
         /// Use the Shader program
         /// </summary>
