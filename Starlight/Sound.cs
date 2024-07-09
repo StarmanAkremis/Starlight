@@ -7,15 +7,26 @@ using System.Threading.Tasks;
 
 namespace Starlight
 {
+    /// <summary>
+    /// Sound class, used to play sound files
+    /// </summary>
     public class Sound
     {
         AudioFileReader audioFile;
         WaveOutEvent? device;
+
+        /// <summary>
+        /// Create Sound Class
+        /// </summary>
+        /// <param name="filePath">Path to audio file</param>
         public Sound(string filePath)
         {
             audioFile = new(filePath);
         }
 
+        /// <summary>
+        /// Play sound file
+        /// </summary>
         public void Play()
         {
             device = new WaveOutEvent();
@@ -24,6 +35,9 @@ namespace Starlight
             device.Play();
         }
 
+        /// <summary>
+        /// Stop sound file
+        /// </summary>
         public void Stop()
         {
             ArgumentNullException.ThrowIfNull(device);
