@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,13 +62,20 @@ public class Shader : IDisposable
         GL.DeleteShader(VertexShader);
     }
 
-    public void SetInt(string name, int value)
+    public void SetUniform(string name, int value)
     {
+        Use();
+
         int location = GL.GetUniformLocation(Handle, name);
-
         GL.Uniform1(location, value);
+    }
 
-        GL.GetUniform(Handle, location, out float a);
+    public void SetUniform(string name, Matrix4 value)
+    {
+        Use();
+
+        int location = GL.GetUniformLocation(Handle, name);
+        GL.UniformMatrix4(location, true, ref value);
     }
 
     public void Use()

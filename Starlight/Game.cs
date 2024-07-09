@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -72,12 +73,16 @@ namespace Starlight
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
 
+            Matrix4 rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(90));
+            Matrix4 scale = Matrix4.CreateScale(.5f, .5f, .5f);
+            Matrix4 transform = rotation * scale;
+
             texture1.Make("resources\\dummy.jpg");
             texture2.Make("resources\\awesome.png");
 
-            shader.Use();
-            shader.SetInt("texture1", 0);
-            shader.SetInt("texture2", 1);
+            shader.SetUniform("texture1", 0);
+            shader.SetUniform("texture2", 1);
+            shader.SetUniform("transform", transform);
         }
 
 
