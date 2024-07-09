@@ -104,6 +104,32 @@ namespace Starlight
         }
 
         /// <summary>
+        /// Sets Shader Uniforms
+        /// </summary>
+        /// <param name="name">Name of Uniform</param>
+        /// <param name="value">The value to set the uniform to</param>
+        public void SetUniform(string name, float value)
+        {
+            Use();
+
+            int location = GL.GetUniformLocation(Handle, name);
+            GL.Uniform1(location, value);
+        }
+
+        /// <summary>
+        /// Sets Shader Uniforms
+        /// </summary>
+        /// <param name="name">Name of Uniform</param>
+        /// <param name="value">The value to set the uniform to</param>
+        public void SetUniform(string name, double value)
+        {
+            Use();
+
+            int location = GL.GetUniformLocation(Handle, name);
+            GL.Uniform1(location, value);
+        }
+
+        /// <summary>
         /// Use the Shader program
         /// </summary>
         public void Use()
