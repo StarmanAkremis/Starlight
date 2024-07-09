@@ -3,34 +3,34 @@
 	public abstract class Entity
 	{
 
+		/// <summary>
+		/// Parent of
+		/// </summary>
 		public Entity? Parent { get; private set; }
 
 		/// <summary>
 		/// Updates every frame, do not run, the engine already does that.
 		/// </summary>
-		public virtual void Update() { }
+		protected virtual void Update() { }
 
 		/// <summary>
 		/// Like update, but runs after all entities have run update, again, do not run, the engine already does that.
 		/// </summary>
-		public virtual void LateUpdate() { }
+		protected virtual void LateUpdate() { }
 
-		/// <summary>
-		/// List of children, do not change it, use the functions instead.
-		/// </summary>
-		internal readonly List<Entity> Children = [];
+		private List<Entity> Children = [];
 
 		/// <summary>
 		/// Add entity to this object's children
 		/// </summary>
 		/// <param name="entity"></param>
 		/// <exception cref="InvalidOperationException">If the entity already is a child of another entity</exception>
-		public void AddChild(Entity entity)
+		public void AddChild(Entity entity, bool replace)
 		{
 			
 			ArgumentNullException.ThrowIfNull(nameof(entity));
 
-			if (entity.Parent != null)
+			if (entity.Parent != null && !replace)
 			{
 				throw new InvalidOperationException("The entity already has a parent.");
 			}

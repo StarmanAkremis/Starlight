@@ -9,10 +9,22 @@ using System.Threading.Tasks;
 
 namespace Starlight
 {
+    /// <summary>
+    /// Shader Manager
+    /// </summary>
     public class Shader : IDisposable
     {
+        /// <summary>
+        /// OpenGL Handle to Shader program
+        /// </summary>
         public int Handle;
 
+        /// <summary>
+        /// Create Shader
+        /// </summary>
+        /// <param name="vertexPath">Path to vertex shader file</param>
+        /// <param name="fragmentPath">Path to fragment shader file</param>
+        /// <exception cref="Exception">Shader compile\linking error</exception>
         public void Create(string vertexPath, string fragmentPath)
         {
             int VertexShader, FragmentShader;
@@ -65,6 +77,11 @@ namespace Starlight
             GL.DeleteShader(VertexShader);
         }
 
+        /// <summary>
+        /// Sets Shader Uniforms
+        /// </summary>
+        /// <param name="name">Name of Uniform</param>
+        /// <param name="value">The value to set the uniform to</param>
         public void SetUniform(string name, int value)
         {
             Use();
@@ -73,6 +90,11 @@ namespace Starlight
             GL.Uniform1(location, value);
         }
 
+        /// <summary>
+        /// Sets Shader Uniforms
+        /// </summary>
+        /// <param name="name">Name of Uniform</param>
+        /// <param name="value">The value to set the uniform to</param>
         public void SetUniform(string name, Matrix4 value)
         {
             Use();
@@ -81,19 +103,21 @@ namespace Starlight
             GL.UniformMatrix4(location, true, ref value);
         }
 
+        /// <summary>
+        /// Use the Shader program
+        /// </summary>
         public void Use()
         {
             GL.UseProgram(Handle);
         }
 
         private bool disposedValue = false;
-
+        
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
                 GL.DeleteProgram(Handle);
-
                 disposedValue = true;
             }
         }
@@ -106,7 +130,10 @@ namespace Starlight
             }
         }
 
-
+        /// <summary>
+        /// Dispose of the Shader program
+        /// It's mandatory to dispose of the shader program when shutting down the aplication
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
