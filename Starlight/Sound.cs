@@ -13,7 +13,7 @@ namespace Starlight
     public class Sound
     {
         AudioFileReader audioFile;
-        WaveOutEvent? device;
+        WaveOutEvent device;
 
         /// <summary>
         /// Create Sound Class
@@ -22,17 +22,26 @@ namespace Starlight
         public Sound(string filePath)
         {
             audioFile = new(filePath);
+            device = new WaveOutEvent();
+            device.Init(audioFile);
+
         }
 
         /// <summary>
-        /// Play sound file
+        /// Play Sound File
         /// </summary>
-        public void Play()
+        /// <param name="loop">loop sound file</param>
+        public void Play(bool loop = false)
         {
-            device = new WaveOutEvent();
-            
-            device.Init(audioFile);
             device.Play();
+
+            device.PlaybackStopped += (s,e) =>
+            { 
+                if (loop)
+                {
+                    Play(loop);
+                }
+            };
         }
 
         /// <summary>
@@ -40,9 +49,13 @@ namespace Starlight
         /// </summary>
         public void Stop()
         {
-            ArgumentNullException.ThrowIfNull(device);
             device.Stop();
+        }
+
+        ~Sound()
+        {
             device.Dispose();
+            audioFile.Dispose();
         }
     }
 }

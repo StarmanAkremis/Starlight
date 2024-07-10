@@ -46,10 +46,8 @@ namespace Starlight
             KeyRun esctoquit = new(this, Keys.Escape, () => Close());
             ents.Add(esctoquit);
 
-            Sound sound = new("resources\\archives.mp3"); //test audio open
-            sound.Play(); // test audio play
-            sound.Stop(); // test audio stop
-            sound.Play(); // test audio recover from stop
+            Sound sound = new("resources\\archives.mp3");
+            sound.Play(true);
 
             shader.Create("resources\\shaders\\vertex.vert", "resources\\shaders\\fragment.frag");
 
