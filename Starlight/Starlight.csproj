@@ -20,7 +20,7 @@
   </Target>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="rd $(ProjectDir)$(OutDir)resources -S -Q" />
+    <Exec Command="rmdir $(ProjectDir)$(OutDir)resources /S /Q" />
   </Target>
 
 </Project>

@@ -3,7 +3,6 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using System.Diagnostics;
 
 namespace Starlight
 {
@@ -30,6 +29,7 @@ namespace Starlight
         int ElementBufferObject;
 
         public Shader shader = new();
+        //public Shader wireframe = new();
 
         Texture texture1 = new();
         Texture texture2 = new();
@@ -71,9 +71,9 @@ namespace Starlight
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
 
-            Matrix4 rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(90));
-            Matrix4 scale = Matrix4.CreateScale(.5f, .5f, .5f);
-            Matrix4 transform = rotation * scale;
+            //Matrix4 rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(90));
+            //Matrix4 scale = Matrix4.CreateScale(.5f, .5f, .5f);
+            Matrix4 transform = Matrix4.Identity; //rotation * scale;
 
             texture1.Make("resources\\dummy.jpg");
             texture2.Make("resources\\awesome.png");
@@ -89,10 +89,8 @@ namespace Starlight
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.BindVertexArray(VertexArrayObject);
 
-            shader.Use(); // Use the shader program before binding textures
-
-            texture1.Use(TextureUnit.Texture0);
-            texture2.Use(TextureUnit.Texture1);
+            texture1.Use(shader, TextureUnit.Texture0);
+            texture2.Use(shader, TextureUnit.Texture1);
 
             GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
 
