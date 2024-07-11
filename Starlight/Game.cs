@@ -3,36 +3,81 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using System.Reflection;
 
 namespace Starlight
 {
     public class Game : GameWindow
     {
+        // Lists
+
         private static List<Entity> ents = [];
 
-        float[] vertices =
-{
-        // Position           // Texture coordinates
-        -0.5f,  0.5f, 0.0f,   0.0f, 1.0f,  // top left
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // bottom left
-         0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // bottom right
-        };
+        float[] vertices = {
+            // Position           // Texture coordinates
+            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+             0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+             0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+             0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+             0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    };
 
         uint[] indices = {  // note that we start from 0!
             0, 1, 2, // first triangle
             1, 2, 3
         };
+        
+        // Primitives
 
         int VertexBufferObject;
         int VertexArrayObject;
         int ElementBufferObject;
 
+        // Objects
+
         public Shader shader = new();
-        //public Shader wireframe = new();
 
         Texture texture1 = new();
         Texture texture2 = new();
+
+        Matrix4 view;
+        Matrix4 projection;
 
         public Game(int width, int height, string title) : base(GameWindowSettings.Default, new NativeWindowSettings()
         {
@@ -71,28 +116,36 @@ namespace Starlight
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
 
-            //Matrix4 rotation = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(90));
-            //Matrix4 scale = Matrix4.CreateScale(.5f, .5f, .5f);
-            Matrix4 transform = Matrix4.Identity; //rotation * scale;
+            GL.Enable(EnableCap.DepthTest);
+
+            view = Matrix4.CreateTranslation(0f, 0f, -3f);
+            projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), Size.X / Size.Y, 0.1f, 100f);
 
             texture1.Make("resources\\dummy.jpg");
             texture2.Make("resources\\awesome.png");
 
             shader.SetUniform("texture1", 0);
             shader.SetUniform("texture2", 1);
-            shader.SetUniform("transform", transform);
+
         }
 
 
         protected override void OnRenderFrame(FrameEventArgs args)
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.BindVertexArray(VertexArrayObject);
 
             texture1.Use(shader, TextureUnit.Texture0);
             texture2.Use(shader, TextureUnit.Texture1);
 
-            GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
+            Matrix4 model = Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(45f)) * Matrix4.CreateRotationY((float)MathHelper.DegreesToRadians(45f));
+
+            shader.SetUniform("model", model);
+            shader.SetUniform("view", view);
+            shader.SetUniform("projection", projection);
+
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+            //GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
 
             Context.SwapBuffers();
 
