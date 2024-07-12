@@ -14,10 +14,6 @@ namespace Starlight
     /// </summary>
     public class Shader : IDisposable
     {
-        /// <summary>
-        /// Global Shader Object
-        /// </summary>
-        public static Shader? global;
 
         /// <summary>
         /// OpenGL Handle to Shader program
@@ -186,6 +182,7 @@ namespace Starlight
 
         public int GetAttribLocation(string attribName)
         {
+            Use();
             return GL.GetAttribLocation(Handle, attribName);
         }
     }

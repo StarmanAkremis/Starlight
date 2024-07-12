@@ -12,6 +12,8 @@ namespace Starlight
     {
         BaseCube? cube;
 
+        Shader? shader;
+
         private static List<Entity> ents = [];
 
         public Game(int width, int height, string title) : base(GameWindowSettings.Default, new NativeWindowSettings()
@@ -29,16 +31,19 @@ namespace Starlight
             Sound sound = new("resources\\archives.mp3");
             sound.Play(true);
 
-            Shader.global = new("resources\\shaders\\vertex.vert", "resources\\shaders\\fragment.frag");
+            shader = new("resources\\shaders\\vertex.vert", "resources\\shaders\\fragment.frag");
 
-            RenderMng.Init("resources\\shaders\\vertex.vert", "resources\\shaders\\fragment.frag", Size);
+            RenderMng.Init(shader, Size);
 
-            cube = new BaseCube();
+            cube = new BaseCube(shader);
+
+            ents.Add(cube);
         }
 
 
         protected override void OnRenderFrame(FrameEventArgs args)
         {
+            Entity.MegaUpdate(ents);
             RenderMng.Render();
 
             Context.SwapBuffers();
@@ -57,7 +62,6 @@ namespace Starlight
         protected override void OnUpdateFrame(FrameEventArgs args)
         { 
             base.OnUpdateFrame(args);
-            Entity.MegaUpdate(ents);
         }
 
         protected override void OnUnload()

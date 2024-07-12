@@ -21,11 +21,13 @@ namespace Starlight
     {
         static List<WorldObject> worldObjects = new();
 
-        static Shader? shader = Shader.global;
-
         //static int VertexBufferObject;
         //static int VertexArrayObject;
         //static int ElementBufferObject;
+
+        static bool initd = false;
+
+        static Shader? shader;
 
         static Matrix4 view;
         static Matrix4 projection;
@@ -37,9 +39,10 @@ namespace Starlight
 
         static RenderInfo[] infos = [];
 
-        public static void Init(string vertex, string fragment, Vector2i _size)
+        public static void Init(Shader _shader, Vector2i _size)
         {
             size = _size;
+            shader = _shader;
 
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
@@ -56,12 +59,12 @@ namespace Starlight
 
             shader?.SetUniform("texture1", 0);
             shader?.SetUniform("texture2", 1);
+            initd = true;
         }
 
         public static void Render()
         {
-            if(shader is null) throw new NullReferenceException();
-
+            if (!initd || shader is null) throw new Exception("UNINITIALIZED RENDER MANAGER");
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             texture1.Use(shader, TextureUnit.Texture0);

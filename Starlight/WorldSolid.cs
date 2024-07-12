@@ -13,9 +13,14 @@ namespace Starlight
         protected float[] texCoords = { };
         protected int[] indices = { };
 
-        Shader shader = Shader.global ?? throw new NullReferenceException();
+        Shader shader;
 
         protected RenderInfo renderInfo = new();
+
+        protected WorldSolid(Shader _shader)
+        {
+            shader = _shader;
+        }
 
         protected override void Update()
         {

@@ -9,7 +9,7 @@ namespace Starlight
 {
     public class BaseCube : WorldSolid
     {
-        public BaseCube()
+        public BaseCube(Shader _shader) : base(_shader)
         {
             vertices =
             [
@@ -27,7 +27,7 @@ namespace Starlight
 
             indices =
             [
-                1,2,3
+                0, 1, 2
             ];
             RenderMng.AddObj(renderInfo);
         }
