@@ -7,7 +7,7 @@ namespace Starlight
     {
         int Handle;
 
-        public void Make(string path)
+        public Texture(string path)
         {
             Handle = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, Handle);

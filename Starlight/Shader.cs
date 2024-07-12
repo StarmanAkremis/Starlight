@@ -25,7 +25,7 @@ namespace Starlight
         /// <param name="vertexPath">Path to vertex shader file</param>
         /// <param name="fragmentPath">Path to fragment shader file</param>
         /// <exception cref="Exception">Shader compile\linking error</exception>
-        public void Create(string vertexPath, string fragmentPath)
+        public Shader(string vertexPath, string fragmentPath)
         {
             int VertexShader, FragmentShader;
 
