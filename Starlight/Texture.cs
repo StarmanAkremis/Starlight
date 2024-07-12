@@ -30,5 +30,7 @@ namespace Starlight
             GL.ActiveTexture(unit);
             GL.BindTexture(TextureTarget.Texture2D, Handle);
         }
+
+        public static Texture dummy = new("resources\\dummy.png");
     }
 }

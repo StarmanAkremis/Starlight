@@ -31,7 +31,6 @@ namespace Starlight
 			this.key = setkey;
 			this.onPressed = onPressed;
 		}
-		
 
 		protected override void Update()
 		{

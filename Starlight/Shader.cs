@@ -15,6 +15,11 @@ namespace Starlight
     public class Shader : IDisposable
     {
         /// <summary>
+        /// Global Shader Object
+        /// </summary>
+        public static Shader? global;
+
+        /// <summary>
         /// OpenGL Handle to Shader program
         /// </summary>
         public int Handle;

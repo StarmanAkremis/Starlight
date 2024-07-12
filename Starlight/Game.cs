@@ -10,7 +10,8 @@ namespace Starlight
 {
     public class Game : GameWindow
     {
-        
+        BaseCube? cube;
+
         private static List<Entity> ents = [];
 
         public Game(int width, int height, string title) : base(GameWindowSettings.Default, new NativeWindowSettings()
@@ -28,7 +29,11 @@ namespace Starlight
             Sound sound = new("resources\\archives.mp3");
             sound.Play(true);
 
+            Shader.global = new("resources\\shaders\\vertex.vert", "resources\\shaders\\fragment.frag");
+
             RenderMng.Init("resources\\shaders\\vertex.vert", "resources\\shaders\\fragment.frag", Size);
+
+            cube = new BaseCube();
         }
 
 
