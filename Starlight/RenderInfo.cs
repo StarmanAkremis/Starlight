@@ -1,12 +1,5 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL4;
-using System.Runtime.InteropServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Sources;
 
 namespace Starlight
 {
@@ -23,46 +16,32 @@ namespace Starlight
 
         public Matrix4 modelMatrix = Matrix4.Identity;
 
-        public void GenerateRenderItems<T, T2, T3>(Shader shader, int vertSize, int texSize, int eboSize, T[] vertData, T2[] texData, T3[] eboData)
-            where T : struct where T2 : struct where T3 : struct
+        public void GenerateRenderItems(Shader shader, int vertSize, int texSize, int eboSize, float[] vertData, float[] texData, int[] eboData)
         {
-            int location = 0;
-            VertexAttribPointerType type;
+            GL.BindVertexArray(VAO);
 
-            location = shader.GetAttribLocation(vertAttrib);
+            // Bind and set vertex buffer
             GL.BindBuffer(BufferTarget.ArrayBuffer, vertVBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertSize * Marshal.SizeOf(typeof(T)), vertData, BufferUsageHint.StaticDraw);
-            type = GetVertexAttribPointerType(typeof(T));
-            GL.VertexAttribPointer(location, 3, type, false, 3 * Marshal.SizeOf(typeof(T)), 0);
-            GL.EnableVertexAttribArray(location);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertSize, vertData, BufferUsageHint.StaticDraw);
+            int vertAttribLocation = shader.GetAttribLocation(vertAttrib);
+            GL.VertexAttribPointer(vertAttribLocation, 3, VertexAttribPointerType.Float, false, 0, 0);
+            GL.EnableVertexAttribArray(vertAttribLocation);
 
-            location = shader.GetAttribLocation(texAttrib);
+            // Bind and set texture buffer
             GL.BindBuffer(BufferTarget.ArrayBuffer, texVBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, texSize * Marshal.SizeOf(typeof(T)), texData, BufferUsageHint.StaticDraw);
-            type = GetVertexAttribPointerType(typeof(T));
-            GL.VertexAttribPointer(location, 3, type, false, 3 * Marshal.SizeOf(typeof(T)), 0);
-            GL.EnableVertexAttribArray(location);
-            
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, eboSize * Marshal.SizeOf(typeof(T)), eboData, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, texSize, texData, BufferUsageHint.StaticDraw);
+            int texAttribLocation = shader.GetAttribLocation(texAttrib);
+            GL.VertexAttribPointer(texAttribLocation, 2, VertexAttribPointerType.Float, false, 0, 0);
+            GL.EnableVertexAttribArray(texAttribLocation);
 
+            // Bind and set element buffer
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, eboSize, eboData, BufferUsageHint.StaticDraw);
+
+            // Unbind VAO
             GL.BindVertexArray(0);
 
             indiceSize = eboSize;
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
-        }
-
-        private static VertexAttribPointerType GetVertexAttribPointerType(Type type)
-        {
-            return type switch
-            {
-                Type t when t == typeof(float) => VertexAttribPointerType.Float,
-                Type t when t == typeof(int) => VertexAttribPointerType.Int,
-                Type t when t == typeof(uint) => VertexAttribPointerType.UnsignedInt,
-                _ => throw new NotSupportedException($"Type {type} is not supported")
-            };
         }
     }
 }

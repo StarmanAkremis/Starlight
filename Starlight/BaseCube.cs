@@ -29,7 +29,7 @@ namespace Starlight
             [
                 0, 1, 2
             ];
-            RenderMng.AddObj(renderInfo);
+            
         }
     }
 }

@@ -10,21 +10,8 @@ using System.Drawing;
 
 namespace Starlight
 {
-    public enum RenderItemType
-    {
-        vertVBO,
-        texVBO,
-        EBO
-    }
-
     public static class RenderMng
     {
-        static List<WorldObject> worldObjects = new();
-
-        //static int VertexBufferObject;
-        //static int VertexArrayObject;
-        //static int ElementBufferObject;
-
         static bool initd = false;
 
         public static Shader? shader;
@@ -37,7 +24,7 @@ namespace Starlight
 
         static Vector2i size;
 
-        static RenderInfo[] infos = [];
+        static List<RenderInfo> infos = [];
 
         public static void Init(Shader _shader, Vector2i _size)
         {
@@ -46,13 +33,6 @@ namespace Starlight
 
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
-
-            // Generate and bind the Vertex Array Object
-            var VertexArrayObject = GL.GenVertexArray();
-            GL.BindVertexArray(VertexArrayObject);
-
-            // Generate and bind the Element Buffer Object
-            
 
             view = Matrix4.CreateTranslation(0f, 0f, -3f);
             projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), size.X / size.Y, 0.1f, 100f);
@@ -73,28 +53,26 @@ namespace Starlight
             shader.SetUniform("view", view);
             shader.SetUniform("projection", projection);
 
-            for(int i = 0; i <= infos.Length - 1; i++)
+            foreach (var info in infos)
             {
-                RenderObj(infos[i]);
+                Console.WriteLine($"VAO: {info.VAO} vertVBO: {info.vertVBO} texVBO: {info.texVBO} EBO: {info.EBO}");
+                RenderObj(info);
             }
 
             infos = [];
-            
         }
 
         private static void RenderObj(RenderInfo info)
         {
-            GL.BindVertexArray(info.VAO);
-            shader?.Use();
-            shader?.SetUniform("model", info.modelMatrix);
-            GL.DrawElements(PrimitiveType.Triangles, info.indiceSize, DrawElementsType.UnsignedInt, 0);
-            //GL.DrawArrays(PrimitiveType.Triangles, 0, info.indiceSize);
-        }
+            shader!.SetUniform("model", info.modelMatrix);
 
+            GL.BindVertexArray(info.VAO);
+            GL.DrawElements(PrimitiveType.Triangles, info.indiceSize, DrawElementsType.UnsignedInt, 0);
+            GL.BindVertexArray(0);
+        }
         public static void AddObj(RenderInfo info)
         {
-            infos.Append(info);
+            infos.Add(info);
         }
-
     }
 }

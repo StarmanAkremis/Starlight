@@ -32,6 +32,8 @@ namespace Starlight
                 Matrix4.Identity;
 
             renderInfo.GenerateRenderItems(shader, vertices.Length, texCoords.Length, indices.Length, vertices, texCoords, indices);
+            Console.WriteLine("B");
+            RenderMng.AddObj(renderInfo);
         }
     }
 }
