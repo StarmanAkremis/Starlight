@@ -22,7 +22,7 @@ namespace Starlight
             shader = _shader;
         }
 
-        protected override void Update()
+        protected override void SyncUpdate()
         {
             renderInfo.modelMatrix = 
                 Matrix4.CreateTranslation(position) *

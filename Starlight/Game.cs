@@ -12,7 +12,7 @@ namespace Starlight
     {
         BaseCube? cube;
 
-        Shader? shader;
+        Shader shader = new();
 
         private static List<Entity> ents = [];
 
@@ -31,7 +31,7 @@ namespace Starlight
             Sound sound = new("resources\\archives.mp3");
             sound.Play(true);
 
-            shader = new("resources\\shaders\\vertex.vert", "resources\\shaders\\fragment.frag");
+            shader.init("resources\\shaders\\vertex.vert", "resources\\shaders\\fragment.frag");
 
             RenderMng.Init(shader, Size);
 
@@ -44,6 +44,7 @@ namespace Starlight
         protected override void OnRenderFrame(FrameEventArgs args)
         {
             Entity.MegaUpdate(ents);
+            Entity.SyncMegaUpdate(ents);
             RenderMng.Render();
 
             Context.SwapBuffers();
@@ -66,6 +67,7 @@ namespace Starlight
 
         protected override void OnUnload()
         {
+            shader.Dispose();
             base.OnUnload();
         }
     }

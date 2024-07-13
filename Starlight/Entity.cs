@@ -18,6 +18,11 @@
 		/// </summary>
 		protected virtual void LateUpdate() { }
 
+		/// <summary>
+		/// Like update, but does't run asynchronously, usefull when using OpenGL functions.
+		/// </summary>
+		protected virtual void SyncUpdate() { }
+
 		private List<Entity> Children = [];
 
 		/// <summary>
@@ -57,40 +62,62 @@
 		/// <returns>A copy of the object's children list</returns>
 		public List<Entity> GetChildren() { return new List<Entity>(Children); }
 
+		internal static void SyncMegaUpdate(List<Entity> ents)
+		{
+            foreach (Entity entity in ents)
+            {
+                UpdateChildren(entity);
+            }
+        }
+
 		internal static async void MegaUpdate(List<Entity> ents)
 		{
 			List<Task> updateTasks = new();
-			foreach (Entity entity in ents)
+
+            List<Task> childUpdateTasks = new();
+
+            foreach (Entity entity in ents)
 			{
-				updateTasks.Add(Task.Run(() => UpdateChildren(entity)));
+				updateTasks.Add(Task.Run(() => UpdateChildren(entity, childUpdateTasks)));
 			}
 
 			await Task.WhenAll(updateTasks);
 
+			childUpdateTasks.Clear();
+
 			foreach (Entity entity in ents)
 			{
-				updateTasks.Add(Task.Run(() => UpdateChildren(entity, true)));
+				updateTasks.Add(Task.Run(() => UpdateChildren(entity, childUpdateTasks, true)));
 			}
 
 			await Task.WhenAll(updateTasks);
-
 		}
 
-		internal static async void UpdateChildren(Entity entity, bool late = false)
+		internal static async void UpdateChildren(Entity entity, List<Task> childUpdateTasks, bool late = false)
 		{
 			if (!late) entity.Update();
 			else entity.LateUpdate();
 
 			List<Entity> children = entity.GetChildren();
-			List<Task> childUpdateTasks = new();
 
 			foreach (Entity child in children)
 			{
-				childUpdateTasks.Add(Task.Run(() => UpdateChildren(child, late)));
+				childUpdateTasks.Add(Task.Run(() => UpdateChildren(child, childUpdateTasks, late)));
 			}
 
 			await Task.WhenAll(childUpdateTasks.ToArray());
 		}
+        internal static void UpdateChildren(Entity entity)
+        {
+            entity.SyncUpdate();
 
-	}
+            List<Entity> children = entity.GetChildren();
+
+            foreach (Entity child in children)
+            {
+                UpdateChildren(child);
+            }
+        }
+
+    }
 }

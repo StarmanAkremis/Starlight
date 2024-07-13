@@ -37,7 +37,7 @@ namespace Starlight
             GL.EnableVertexAttribArray(location);
 
             location = shader.GetAttribLocation(texAttrib);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vertVBO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, texVBO);
             GL.BufferData(BufferTarget.ArrayBuffer, texSize * Marshal.SizeOf(typeof(T)), texData, BufferUsageHint.StaticDraw);
             type = GetVertexAttribPointerType(typeof(T));
             GL.VertexAttribPointer(location, 3, type, false, 3 * Marshal.SizeOf(typeof(T)), 0);

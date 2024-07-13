@@ -27,7 +27,7 @@ namespace Starlight
 
         static bool initd = false;
 
-        static Shader? shader;
+        public static Shader? shader;
 
         static Matrix4 view;
         static Matrix4 projection;
@@ -57,8 +57,8 @@ namespace Starlight
             view = Matrix4.CreateTranslation(0f, 0f, -3f);
             projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), size.X / size.Y, 0.1f, 100f);
 
-            shader?.SetUniform("texture1", 0);
-            shader?.SetUniform("texture2", 1);
+            shader.SetUniform("texture1", 0);
+            shader.SetUniform("texture2", 1);
             initd = true;
         }
 
@@ -91,11 +91,6 @@ namespace Starlight
         public static void AddObj(RenderInfo info)
         {
             infos.Append(info);
-        }
-
-        static void Dispose()
-        {
-            shader?.Dispose();
         }
 
     }

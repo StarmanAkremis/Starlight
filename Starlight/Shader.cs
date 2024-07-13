@@ -26,7 +26,7 @@ namespace Starlight
         /// <param name="vertexPath">Path to vertex shader file</param>
         /// <param name="fragmentPath">Path to fragment shader file</param>
         /// <exception cref="Exception">Shader compile\linking error</exception>
-        public Shader(string vertexPath, string fragmentPath)
+        public void init(string vertexPath, string fragmentPath)
         {
             int VertexShader, FragmentShader;
 
@@ -166,7 +166,8 @@ namespace Starlight
         {
             if (disposedValue == false)
             {
-                throw new Exception("GPU Resource leak! Did you forget to call Dispose()?");
+                //throw new Exception("GPU Resource leak! Did you forget to call Dispose()?");
+                Console.Error.WriteLine("leak");
             }
         }
 
