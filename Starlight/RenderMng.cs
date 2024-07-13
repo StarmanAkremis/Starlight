@@ -78,14 +78,17 @@ namespace Starlight
                 RenderObj(infos[i]);
             }
 
-            //GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+            infos = [];
+            
         }
 
         private static void RenderObj(RenderInfo info)
         {
             GL.BindVertexArray(info.VAO);
+            shader?.Use();
             shader?.SetUniform("model", info.modelMatrix);
             GL.DrawElements(PrimitiveType.Triangles, info.indiceSize, DrawElementsType.UnsignedInt, 0);
+            //GL.DrawArrays(PrimitiveType.Triangles, 0, info.indiceSize);
         }
 
         public static void AddObj(RenderInfo info)

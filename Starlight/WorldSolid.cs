@@ -25,11 +25,12 @@ namespace Starlight
         protected override void SyncUpdate()
         {
             renderInfo.modelMatrix = 
-                Matrix4.CreateTranslation(position) *
-                Matrix4.CreateRotationX(rotation.X) *
-                Matrix4.CreateRotationY(rotation.Y) *
-                Matrix4.CreateRotationZ(rotation.Z);
-            
+                //Matrix4.CreateTranslation(position) *
+                //Matrix4.CreateRotationX(rotation.X) *
+                //Matrix4.CreateRotationY(rotation.Y) *
+                //Matrix4.CreateRotationZ(rotation.Z);
+                Matrix4.Identity;
+
             renderInfo.GenerateRenderItems(shader, vertices.Length, texCoords.Length, indices.Length, vertices, texCoords, indices);
         }
     }
